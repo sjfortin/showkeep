@@ -1,20 +1,35 @@
 import React, { Component } from "react";
-
-const API_KEY = process.env.REACT_APP_SETLIST_FM_API_KEY;
+import Show from './Show'
 
 class ShowSearch extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: []
-    };
-  }
+  state = {
+    response: []
+  };
 
   componentDidMount() {
+    this.searchShows()
+      .then(res => {
+        this.setState({ response: res.setlist });
+        console.log(this.state.response)
+      })
+      .catch(err => console.log(err));
   }
 
+  searchShows = async () => {
+    const response = await fetch("/shows");
+    const body = await response.json();
+
+    if (response.status !== 200) throw Error(body.message);
+
+    return body;
+  };
+
   render() {
-    return <div>I am ShowSearch</div>;
+    return (
+      <div style={{maxWidth: '800px', margin: 'auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around'}}>
+        {this.state.response.map(show => <Show key={show.id} showDetails={show} />)}
+      </div>
+    );
   }
 }
 
