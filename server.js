@@ -12,24 +12,19 @@ const API_KEY = process.env.SETLIST_FM_API_KEY;
 // GET Search Results from server
 app.get('/shows', function (req, res) {
     // https://api.setlist.fm/rest/1.0/search/setlists?artistName=' + req.query.artist + '&cityName=' + req.query.city + '&p=' + req.query.currentPageNumber
+    console.log('req', req.query)
+    let baseUrl = 'https://api.setlist.fm/rest/1.0/search/setlists?';
+    if (req.query.artist) {
+      baseUrl += "artistName=" + req.query.artist + "&p=1";
+    } else {
+      baseUrl += "artistName=kamasi&p=1";
+    }
 
-    // let baseUrl = 'https://api.setlist.fm/rest/1.0/search/setlists?';
-    // if (req.query.artist) {
-    //   baseUrl += 'artistName=' + req.query.artist;
-    // }
-    // if (req.query.city) {
-    //   baseUrl += '&cityName=' + req.query.city;
-    // }
-    // if (req.query.venue) {
-    //   baseUrl += '&venueName=' + req.query.venue;
-    // }
-    // baseUrl += '&p=' + req.query.currentPageNumber;
-
-    // console.log('baseUrl', baseUrl);
+    console.log('baseUrl', baseUrl);
 
     request(
       {
-        url: "https://api.setlist.fm/rest/1.0/search/setlists?artistName=kamasi&p=1",
+        url: baseUrl,
         headers: {
           Accept: "application/json",
           "x-api-key": API_KEY,
@@ -38,7 +33,6 @@ app.get('/shows', function (req, res) {
       },
       function(error, response, body) {
         if (response && response.statusCode == 200) {
-          console.log(body)
           res.send(body);
         } else {
           console.log("error", error);

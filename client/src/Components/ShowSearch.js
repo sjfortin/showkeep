@@ -1,35 +1,60 @@
 import React, { Component } from "react";
-import Show from './Show'
+import Show from "./Show";
 
 class ShowSearch extends Component {
-  state = {
-    response: []
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      error: null,
+      isLoaded: false,
+      response: [],
+      term: "Radiohead"
+    };
+  }
 
   componentDidMount() {
-    this.searchShows()
-      .then(res => {
-        this.setState({ response: res.setlist });
-        console.log(this.state.response)
-      })
+    fetch(`/shows?artist=${this.state.term}`)
+      .then(res => res.json())
+      .then(
+        res => {
+          this.setState({ isLoaded: true, response: res.setlist });
+          console.log(this.state.response);
+        },
+        error => {
+          this.setState({
+            isLoaded: true,
+            error
+          });
+        }
+      )
       .catch(err => console.log(err));
   }
 
-  searchShows = async () => {
-    const response = await fetch("/shows");
-    const body = await response.json();
-
-    if (response.status !== 200) throw Error(body.message);
-
-    return body;
-  };
-
   render() {
-    return (
-      <div style={{maxWidth: '800px', margin: 'auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around'}}>
-        {this.state.response.map(show => <Show key={show.id} showDetails={show} />)}
-      </div>
-    );
+    const { error, isLoaded, response } = this.state;
+    if (error) {
+      return <div>Error: {error.message}</div>;
+    } else if (!isLoaded) {
+      return <div>Loading...</div>;
+    } else {
+      return (
+        <div>
+          <div
+            style={{
+              maxWidth: "800px",
+              margin: "auto",
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "space-around"
+            }}
+          >
+            {response.map(show => (
+              <Show key={show.id} showDetails={show} />
+            ))}
+          </div>
+        </div>
+      );
+    }
   }
 }
 
