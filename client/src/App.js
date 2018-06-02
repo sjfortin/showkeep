@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import "./App.css";
-import ShowSearch from "./Components/ShowSearch";
+import SearchShows from './Containers/SearchShows';
 
 class App extends Component {
 
   render() {
     return (
       <div>
-        <ShowSearch />
+        <SearchShows />
       </div>
     );
   }

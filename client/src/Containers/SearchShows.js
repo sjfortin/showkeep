@@ -1,14 +1,14 @@
-import React, { Component } from "react";
-import Show from "./Show";
+import React, { Component } from 'react';
+import ShowSearchList from '../Components/ShowSearchList';
 
-class ShowSearch extends Component {
+class SearchShows extends Component {
   constructor(props) {
     super(props);
     this.state = {
       error: null,
       isLoaded: false,
       response: [],
-      term: "Radiohead"
+      term: 'Mary Lattimore'
     };
   }
 
@@ -37,25 +37,9 @@ class ShowSearch extends Component {
     } else if (!isLoaded) {
       return <div>Loading...</div>;
     } else {
-      return (
-        <div>
-          <div
-            style={{
-              maxWidth: "800px",
-              margin: "auto",
-              display: "flex",
-              flexWrap: "wrap",
-              justifyContent: "space-around"
-            }}
-          >
-            {response.map(show => (
-              <Show key={show.id} showDetails={show} />
-            ))}
-          </div>
-        </div>
-      );
+      return <ShowSearchList shows={response} />;
     }
   }
 }
 
-export default ShowSearch;
+export default SearchShows;

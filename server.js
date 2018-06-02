@@ -15,7 +15,7 @@ app.get('/shows', function (req, res) {
     console.log('req', req.query)
     let baseUrl = 'https://api.setlist.fm/rest/1.0/search/setlists?';
     if (req.query.artist) {
-      baseUrl += "artistName=" + req.query.artist + "&p=1";
+      baseUrl += "artistName=" + req.query.artist;
     } else {
       baseUrl += "artistName=kamasi&p=1";
     }
