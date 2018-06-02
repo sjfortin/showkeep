@@ -4,45 +4,63 @@ import ShowSearchList from '../Components/ShowSearchList';
 class SearchShows extends Component {
   constructor(props) {
     super(props);
-    this.state = { error: null, isLoaded: false, response: [], showSearchedFor: 'Wilco', somethingHasBeenSearchedFor: '' };
+    this.state = {
+      error: null,
+      isLoaded: false,
+      response: [],
+      searchTerm: ''
+    };
+    this.setSearchTerm = this.setSearchTerm.bind(this);
+    this.submitSearch = this.submitSearch.bind(this);
   }
 
-  componentDidMount() {
-    if (this.state.showSearchedFor) {
-      fetch(`/shows?artist=${this.state.showSearchedFor}`)
-        .then(res => res.json())
-        .then(
-          res => {
-            this.setState({ isLoaded: true, response: res.setlist });
-            console.log(this.state.response);
-          },
-          error => {
-            this.setState({
-              isLoaded: true,
-              error
-            });
-          }
-        )
-        .catch(err => console.log(err));
-    } else {
+  setSearchTerm(event) {
+    this.setState({ searchTerm: event.target.value });
+  }
+
+  submitSearch(event) {
+    event.preventDefault();
+    if (this.state.searchTerm === '') {
       this.setState({
-        somethingHasBeenSearchedFor: 'not yet',
-        isLoaded: true
+        response: [],
+        isLoaded: false
       });
+    } else {
+      this.getShows();
     }
   }
+
+  getShows = () => {
+    return fetch(`/shows?artist=${this.state.searchTerm}`)
+      .then(res => res.json())
+      .then(
+        res => {
+          this.setState({ isLoaded: true, response: res.setlist });
+        },
+        error => {
+          this.setState({ isLoaded: true, error });
+        }
+      )
+      .catch(err => console.log(err));
+  };
 
   render() {
-    const { error, isLoaded, response, somethingHasBeenSearchedFor } = this.state;
-    if (error) {
-      return <div>Error: {error.message}</div>;
-    } else if (!isLoaded) {
-      return <div>Loading...</div>;
-    } else if (somethingHasBeenSearchedFor === 'not yet') {
-      return <div>Search, or else!</div>
-    } else {
-      return <ShowSearchList shows={response} />;
-    }
+    return (
+      <div>
+        <form onSubmit={this.submitSearch}>
+          <label>
+            Search for a show:
+            <input value={this.state.searchTerm} onChange={this.setSearchTerm} />
+          </label>
+          <input type="submit" value="Submit" />
+        </form>
+        {!this.state.isLoaded ? (
+          <div>Use that search box to do some searching</div>
+        ) : (
+          <ShowSearchList shows={this.state.response} />
+        )}
+      </div>
+    );
   }
 }
 
