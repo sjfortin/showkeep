@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ShowSearchList from '../Components/ShowSearchList';
+import axios from 'axios';
 
 class SearchShows extends Component {
   constructor(props) {
@@ -8,7 +9,8 @@ class SearchShows extends Component {
       error: null,
       isLoaded: false,
       response: [],
-      searchTerm: ''
+      searchTerm: '',
+      noResults: ''
     };
     this.setSearchTerm = this.setSearchTerm.bind(this);
     this.submitSearch = this.submitSearch.bind(this);
@@ -31,11 +33,20 @@ class SearchShows extends Component {
   }
 
   getShows = () => {
-    return fetch(`/shows?artist=${this.state.searchTerm}`)
-      .then(res => res.json())
+    return axios
+      .get(`/shows?artist=${this.state.searchTerm}`)
       .then(
         res => {
-          this.setState({ isLoaded: true, response: res.setlist });
+          console.log(res);
+          if (res.status === 204) {
+            this.setState({ isLoaded: true, response: [], noResults: true });
+          } else {
+            this.setState({
+              isLoaded: true,
+              response: res.data.setlist,
+              noResults: false
+            });
+          }
         },
         error => {
           this.setState({ isLoaded: true, error });
@@ -50,12 +61,17 @@ class SearchShows extends Component {
         <form onSubmit={this.submitSearch}>
           <label>
             Search for a show:
-            <input value={this.state.searchTerm} onChange={this.setSearchTerm} />
+            <input
+              value={this.state.searchTerm}
+              onChange={this.setSearchTerm}
+            />
           </label>
           <input type="submit" value="Submit" />
         </form>
         {!this.state.isLoaded ? (
           <div>Use that search box to do some searching</div>
+        ) : this.state.noResults ? (
+          <div>No results</div>
         ) : (
           <ShowSearchList shows={this.state.response} />
         )}
