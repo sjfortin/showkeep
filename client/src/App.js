@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import SearchShows from './Containers/SearchShows';
+import SearchShows from './Components/SearchShows';
 
 class App extends Component {
   render() {

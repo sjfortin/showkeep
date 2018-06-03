@@ -7,7 +7,8 @@ const port = process.env.PORT || 5000;
 
 const request = require('request');
 
-const API_KEY = process.env.SETLIST_FM_API_KEY;
+const SETLIST_FM_API_KEY = process.env.SETLIST_FM_API_KEY;
+const LAST_FM_API_KEY = process.env.LAST_FM_API_KEY;
 
 // Body parser middleware
 app.use(bodyParser.json());
@@ -26,7 +27,7 @@ app.get('/shows', function(req, res) {
       url: baseUrl,
       headers: {
         Accept: 'application/json',
-        'x-api-key': API_KEY,
+        'x-api-key': SETLIST_FM_API_KEY,
         'User-Agent': 'request'
       }
     },
@@ -39,6 +40,34 @@ app.get('/shows', function(req, res) {
       }
     }
   );
+});
+
+app.get('/artistImage', function(req, res) {
+  var artist = req.query.artist;
+  if (req.isAuthenticated()) {
+    request(
+      {
+        url:
+          'http://ws.audioscrobbler.com/2.0/?method=artist.search&artist=' +
+          artist +
+          '&api_key=' +
+          LAST_FM_API_KEY +
+          '&format=json',
+        headers: {
+          Accept: 'application/json',
+          'User-Agent': 'request'
+        }
+      },
+      function(error, response, body) {
+        if (response && response.statusCode == 200) {
+          res.send(body);
+        } else {
+          console.log('error', error);
+          res.sendStatus(204);
+        }
+      }
+    );
+  }
 });
 
 // Add a show to database

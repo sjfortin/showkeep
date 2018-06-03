@@ -10,10 +10,12 @@ class SearchShows extends Component {
       isLoaded: false,
       response: [],
       searchTerm: '',
-      noResults: ''
+      noResults: '',
+      artistImage: ''
     };
     this.setSearchTerm = this.setSearchTerm.bind(this);
     this.submitSearch = this.submitSearch.bind(this);
+    this.getShows = this.getShows.bind(this);
   }
 
   setSearchTerm(event) {
@@ -37,7 +39,6 @@ class SearchShows extends Component {
       .get(`/shows?artist=${this.state.searchTerm}`)
       .then(
         res => {
-          console.log(res);
           if (res.status === 204) {
             this.setState({ isLoaded: true, response: [], noResults: true });
           } else {
@@ -52,7 +53,27 @@ class SearchShows extends Component {
           this.setState({ isLoaded: true, error });
         }
       )
+      .then(() => {
+        if (!this.state.noResults) {
+          this.getImage();
+        }
+      })
       .catch(err => console.log(err));
+  };
+
+  getImage = () => {
+    return axios
+      .get(
+        `http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${
+          this.state.response[0].artist.name
+        }&api_key=17fc707735a64230fe40a6576b115c6a&format=json`
+      )
+      .then(res => {
+        console.log('getting the artist iamge', res);
+        this.setState({
+          artistImage: res.data.artist.image[2]['#text']
+        });
+      });
   };
 
   render() {
@@ -73,7 +94,10 @@ class SearchShows extends Component {
         ) : this.state.noResults ? (
           <div>No results</div>
         ) : (
-          <ShowSearchList shows={this.state.response} />
+          <ShowSearchList
+            shows={this.state.response}
+            image={this.state.artistImage}
+          />
         )}
       </div>
     );
