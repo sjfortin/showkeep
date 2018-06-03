@@ -9,9 +9,10 @@ class ShowSearch extends Component {
 
   addShow() {
     axios
-      .post('/user', {
-        firstName: 'Fred',
-        lastName: 'Flintstone'
+      .post('/addShowManually', {
+        artist: this.props.showDetails.artist.name,
+        date: this.props.showDetails.eventDate,
+        venue: this.props.showDetails.venue.name
       })
       .then(function(response) {
         console.log(response);
