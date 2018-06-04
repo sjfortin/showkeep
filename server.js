@@ -42,32 +42,30 @@ app.get('/shows', function(req, res) {
   );
 });
 
-app.get('/artistImage', function(req, res) {
-  var artist = req.query.artist;
-  if (req.isAuthenticated()) {
-    request(
-      {
-        url:
-          'http://ws.audioscrobbler.com/2.0/?method=artist.search&artist=' +
-          artist +
-          '&api_key=' +
-          LAST_FM_API_KEY +
-          '&format=json',
-        headers: {
-          Accept: 'application/json',
-          'User-Agent': 'request'
-        }
-      },
-      function(error, response, body) {
-        if (response && response.statusCode == 200) {
-          res.send(body);
-        } else {
-          console.log('error', error);
-          res.sendStatus(204);
-        }
+app.get('/image', function(req, res) {
+  console.log(req.query);
+  request(
+    {
+      url:
+        'http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&mbid=' +
+        req.query.mbid +
+        '&api_key=' +
+        LAST_FM_API_KEY +
+        '&format=json',
+      headers: {
+        Accept: 'application/json',
+        'User-Agent': 'request'
       }
-    );
-  }
+    },
+    function(error, response, body) {
+      if (response && response.statusCode == 200) {
+        res.send(body);
+      } else {
+        console.log('error', error);
+        res.sendStatus(204);
+      }
+    }
+  );
 });
 
 // Add a show to database

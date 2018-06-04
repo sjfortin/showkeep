@@ -42,9 +42,10 @@ class SearchShows extends Component {
           if (res.status === 204) {
             this.setState({ isLoaded: true, response: [], noResults: true });
           } else {
+            console.log(res.data);
             this.setState({
               isLoaded: true,
-              response: res.data.setlist,
+              response: res.data,
               noResults: false
             });
           }
@@ -63,13 +64,8 @@ class SearchShows extends Component {
 
   getImage = () => {
     return axios
-      .get(
-        `http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${
-          this.state.response[0].artist.name
-        }&api_key=17fc707735a64230fe40a6576b115c6a&format=json`
-      )
+      .get(`/image?mbid=${this.state.response.setlist[0].artist.mbid}`)
       .then(res => {
-        console.log('getting the artist iamge', res);
         this.setState({
           artistImage: res.data.artist.image[2]['#text']
         });
