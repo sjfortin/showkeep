@@ -1,5 +1,23 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { withStyles } from "@material-ui/core/styles";
+import Card from "@material-ui/core/Card";
+import CardActions from "@material-ui/core/CardActions";
+import CardContent from "@material-ui/core/CardContent";
+import CardMedia from "@material-ui/core/CardMedia";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+
+const styles = {
+  card: {
+    maxWidth: 345,
+    margin: 10
+  },
+  media: {
+    height: 0,
+    paddingTop: "56.25%" // 16:9
+  }
+};
 
 class ShowSearchList extends Component {
   constructor(props) {
@@ -12,7 +30,7 @@ class ShowSearchList extends Component {
     axios
       .post("/addShowManually", { artist: show })
       .then(function(response) {
-        console.log('test',response);
+        console.log("test", response);
       })
       .catch(function(error) {
         console.log(error);
@@ -20,39 +38,40 @@ class ShowSearchList extends Component {
   }
 
   render() {
+    const { classes } = this.props;
     return (
-      <div
-        style={{
-          margin: "auto 10px",
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "space-around"
-        }}
-      >
+      <div>
         {this.props.shows.setlist.map(show => (
           // <Show key={show.id} showDetails={show} image={this.props.image} />
-          <div
-            key={show.id}
-            style={{
-              flexBasis: "30%",
-              padding: "5px 10px",
-              marginBottom: "20px",
-              borderRadius: "4px",
-              backgroundColor: "#e5e5e5",
-              boxShadow:
-                "0 15px 35px rgba(50, 50, 93, .1), 0 5px 15px rgba(0, 0, 0, .07)"
-            }}
-          >
-            {/* <img src={this.props.image} alt={this.props.image} /> */}
-            <p>Artist: {show.artist.name}</p>
-            <p>Date: {show.eventDate}</p>
-            <p>Venue: {show.venue.name}</p>
-            <p>City: {show.venue.city.name}</p>
-            <button onClick={() => { this.addShow(show) }}>Add show</button>
+          <div>
+            <Card className={classes.card}>
+              <CardMedia
+                className={classes.media}
+                image={this.props.image}
+                title={show.artist.name}
+              />
+              <CardContent>
+                <Typography color="textSecondary">
+                  {show.eventDate}
+                </Typography>
+                <Typography variant="headline" component="h2">
+                  {show.artist.name}
+                </Typography>
+                <Typography component="p">
+                  {show.venue.name},{" "}
+                  {show.venue.city.name}
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button onClick={this.addShow} size="small">
+                  Add show
+                </Button>
+              </CardActions>
+            </Card>
           </div>
         ))}
       </div>
     );
   }
 }
-export default ShowSearchList;
+export default withStyles(styles)(ShowSearchList);
