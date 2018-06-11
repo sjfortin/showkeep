@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import axios from "axios";
+import React, { Component } from 'react';
+import axios from 'axios';
 
 class ShowSearchList extends Component {
   constructor(props) {
@@ -7,12 +7,14 @@ class ShowSearchList extends Component {
     this.addShow = this.addShow.bind(this);
   }
 
-  addShow(show) {
-    console.log(show);
+  addShow(show, image) {
     axios
-      .post("/addShowManually", { artist: show })
+      .post('/addShowManually', {
+        show: show,
+        image: image
+      })
       .then(function(response) {
-        console.log('test',response);
+        console.log(response);
       })
       .catch(function(error) {
         console.log(error);
@@ -23,10 +25,10 @@ class ShowSearchList extends Component {
     return (
       <div
         style={{
-          margin: "auto 10px",
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "space-around"
+          margin: 'auto 10px',
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'space-around'
         }}
       >
         {this.props.shows.setlist.map(show => (
@@ -34,21 +36,27 @@ class ShowSearchList extends Component {
           <div
             key={show.id}
             style={{
-              flexBasis: "30%",
-              padding: "5px 10px",
-              marginBottom: "20px",
-              borderRadius: "4px",
-              backgroundColor: "#e5e5e5",
+              flexBasis: '30%',
+              padding: '5px 10px',
+              marginBottom: '20px',
+              borderRadius: '4px',
+              backgroundColor: '#e5e5e5',
               boxShadow:
-                "0 15px 35px rgba(50, 50, 93, .1), 0 5px 15px rgba(0, 0, 0, .07)"
+                '0 15px 35px rgba(50, 50, 93, .1), 0 5px 15px rgba(0, 0, 0, .07)'
             }}
           >
-            {/* <img src={this.props.image} alt={this.props.image} /> */}
+            <img src={this.props.image} alt={this.props.image} />
             <p>Artist: {show.artist.name}</p>
             <p>Date: {show.eventDate}</p>
             <p>Venue: {show.venue.name}</p>
             <p>City: {show.venue.city.name}</p>
-            <button onClick={() => { this.addShow(show) }}>Add show</button>
+            <button
+              onClick={() => {
+                this.addShow(show, this.props.image);
+              }}
+            >
+              Add show
+            </button>
           </div>
         ))}
       </div>

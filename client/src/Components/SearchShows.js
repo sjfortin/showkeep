@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import ShowSearchList from "../Components/ShowSearchList";
-import axios from "axios";
+import React, { Component } from 'react';
+import ShowSearchList from '../Components/ShowSearchList';
+import axios from 'axios';
 
 class SearchShows extends Component {
   constructor(props) {
@@ -9,9 +9,9 @@ class SearchShows extends Component {
       error: null,
       isLoaded: false,
       response: [],
-      searchTerm: "",
-      noResults: "",
-      artistImage: ""
+      searchTerm: '',
+      noResults: '',
+      artistImage: ''
     };
     this.setSearchTerm = this.setSearchTerm.bind(this);
     this.submitSearch = this.submitSearch.bind(this);
@@ -24,7 +24,7 @@ class SearchShows extends Component {
 
   submitSearch(event) {
     event.preventDefault();
-    if (this.state.searchTerm === "") {
+    if (this.state.searchTerm === '') {
       this.setState({
         response: [],
         isLoaded: false
@@ -66,9 +66,17 @@ class SearchShows extends Component {
     return axios
       .get(`/image?mbid=${this.state.response.setlist[0].artist.mbid}`)
       .then(res => {
-        this.setState({
-          artistImage: res.data.artist.image[2]["#text"]
-        });
+        console.log('image res', res);
+        if (res.data.artist) {
+          this.setState({
+            artistImage: res.data.artist.image[2]['#text']
+          });
+        } else {
+          this.setState({
+            artistImage:
+              'http://blog.iso50.com/wp-content/uploads/2016/10/1106-450x450.jpg'
+          });
+        }
       });
   };
 
@@ -91,10 +99,10 @@ class SearchShows extends Component {
           <div>No results</div>
         ) : (
           <div>
-            <div style={{ textAlign: "center", padding: "20px" }}>
+            <div style={{ textAlign: 'center', padding: '20px' }}>
               <h1>Search Results:</h1>
               <h3>
-                {this.state.response.page} out of {this.state.response.total}{" "}
+                {this.state.response.page} out of {this.state.response.total}{' '}
                 pages
               </h3>
               <ShowSearchList
