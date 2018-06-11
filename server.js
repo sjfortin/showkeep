@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT || 5000;
+const pool = require('./modules/pool');
 
 const request = require('request');
 
@@ -68,39 +69,35 @@ app.get('/image', function(req, res) {
   );
 });
 
-// Add a show to database
+// POST manual shows to users_shows table
 app.post('/addShowManually', function(req, res) {
   console.log(req.body);
-  res.status(200).send(req.body);
-  // pool.connect(function(errDatabase, client, done) {
-  //   if (errDatabase) {
-  //     console.log('Error connecting to database', errDatabase);
-  //     res.sendStatus(500);
-  //   } else {
-  //     client.query(
-  //       'INSERT INTO users_shows (artist, show_date, full_year, venue, city, state, image, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) returning id;',
-  //       [
-  //         req.body.newShow.artist,
-  //         req.body.newShow.show_date,
-  //         req.body.full_year,
-  //         req.body.newShow.venue,
-  //         req.body.newShow.city,
-  //         req.body.newShow.state,
-  //         req.body.newShow.newImage,
-  //         userID
-  //       ],
-  //       function(errQuery, data) {
-  //         done();
-  //         if (errQuery) {
-  //           console.log('Error making database query', errQuery);
-  //           res.sendStatus(500);
-  //         } else {
-  //           res.send(data.rows);
-  //         }
-  //       }
-  //     );
-  //   }
-  // });
+  pool.connect(function(errDatabase, client, done) {
+    if (errDatabase) {
+      console.log('Error connecting to database', errDatabase);
+      res.sendStatus(500);
+    } else {
+      client.query(
+        'INSERT INTO testshows (artist, venue, city, image) VALUES ($1, $2, $3, $4);',
+        [
+          req.body.show.artist.name,
+          req.body.show.venue.name,
+          req.body.show.venue.city.name,
+          req.body.image
+        ],
+        function(errQuery, data) {
+          done();
+          if (errQuery) {
+            console.log('Error making database query', errQuery);
+            res.sendStatus(500);
+          } else {
+            res.send(data.rows);
+            // res.sendStatus(200);
+          }
+        }
+      );
+    }
+  });
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
