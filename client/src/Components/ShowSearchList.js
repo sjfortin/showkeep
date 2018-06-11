@@ -7,10 +7,10 @@ function addShow(show, image) {
       show: show,
       image: image
     })
-    .then(function (response) {
+    .then(function(response) {
       console.log(response);
     })
-    .catch(function (error) {
+    .catch(function(error) {
       console.log(error);
     });
 }
