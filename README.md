@@ -4,4 +4,4 @@ To dos:
 - React perf to check uneccessary renders
 - Postgres DB
 - Heroku deploy
-
+- Styled components
