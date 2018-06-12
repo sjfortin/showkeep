@@ -40,7 +40,6 @@ const ShowSearchList = props => {
               '0 15px 35px rgba(50, 50, 93, .1), 0 5px 15px rgba(0, 0, 0, .07)'
           }}
         >
-          <img src={props.image} alt={props.image} />
           <p>Artist: {show.artist.name}</p>
           <p>Date: {show.eventDate}</p>
           <p>Venue: {show.venue.name}</p>
