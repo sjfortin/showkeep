@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 function addShow(show, image) {
@@ -51,6 +52,17 @@ const ShowSearchList = props => {
           >
             Add show
           </button>
+          <Link
+            to={{
+              pathname: `show/${show.id}`,
+              state: {
+                show: show,
+                image: props.image
+              }
+            }}
+          >
+            See details
+          </Link>
         </div>
       ))}
     </div>
