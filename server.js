@@ -48,8 +48,8 @@ app.get('/image', function(req, res) {
   request(
     {
       url:
-        'http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&mbid=' +
-        req.query.mbid +
+        'http://ws.audioscrobbler.com/2.0/?method=artist.search&artist=' +
+        req.query.artist +
         '&api_key=' +
         LAST_FM_API_KEY +
         '&format=json',

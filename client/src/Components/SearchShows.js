@@ -64,12 +64,12 @@ class SearchShows extends Component {
 
   getImage = () => {
     return axios
-      .get(`/image?mbid=${this.state.response.setlist[0].artist.mbid}`)
+      .get(`/image?artist=${this.state.response.setlist[0].artist.name}`)
       .then(res => {
-        console.log('image res', res);
-        if (res.data.artist) {
+        if (res.data.results.artistmatches.artist) {
           this.setState({
-            artistImage: res.data.artist.image[2]['#text']
+            artistImage:
+              res.data.results.artistmatches.artist[0].image[2]['#text']
           });
         } else {
           this.setState({
