@@ -51,14 +51,17 @@ const ShowResult = styled.div`
 const ShowSearchList = props => {
   return (
     <div>
-      <img
-        src={props.imageSmall}
-        alt={props.imageSmall}
-      />
+      <img src={props.imageSmall} alt={props.imageSmall} />
       {props.shows.setlist.map(show => (
         <ShowResult key={show.id}>
           <h3>{show.artist.name}</h3>
-          <p>{show.eventDate}<br/>{show.venue.name}<br/>{show.venue.city.name}</p>
+          <p>
+            {show.eventDate}
+            <br />
+            {show.venue.name}
+            <br />
+            {show.venue.city.name}
+          </p>
           <Button
             onClick={() => {
               addShow(show, props.image);
@@ -70,6 +73,7 @@ const ShowSearchList = props => {
             to={{
               pathname: `show/${show.id}`,
               state: {
+                shows: props.shows,
                 show: show,
                 image: props.image
               }

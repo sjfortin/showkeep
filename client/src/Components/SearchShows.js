@@ -19,6 +19,16 @@ class SearchShows extends Component {
     this.getShows = this.getShows.bind(this);
   }
 
+  componentDidMount() {
+    if (this.props.location.query) {
+      this.setState({
+        response: this.props.location.query.shows,
+        isLoaded: true,
+        noResults: false
+      });
+    }
+  }
+
   setSearchTerm(event) {
     this.setState({ searchTerm: event.target.value });
   }

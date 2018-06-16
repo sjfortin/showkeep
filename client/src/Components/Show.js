@@ -5,7 +5,7 @@ class Show extends Component {
   render() {
     return (
       <div>
-        <Link to="/search">Go Back</Link>
+        <Link to={{ pathname: '/search', query: { shows: this.props.location.state.shows } }}>Go Back</Link>
         <div>
           <img
             src={this.props.location.state.image}
