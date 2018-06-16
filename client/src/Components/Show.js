@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 
 class Show extends Component {
   render() {
-    const { name } = this.props.location.state.show.artist;
     return (
       <div>
         <Link to="/search">Go Back</Link>

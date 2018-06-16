@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import styled, { css } from 'styled-components';
 import axios from 'axios';
 
 function addShow(show, image) {
@@ -16,41 +17,55 @@ function addShow(show, image) {
     });
 }
 
+const Button = styled.a`
+  display: inline-block;
+  border-radius: 3px;
+  padding: 0.5rem 0;
+  margin: 0.5rem 1rem;
+  width: 11rem;
+  background: transparent;
+  color: rebeccapurple;
+  border: 2px solid rebeccapurple;
+  cursor: pointer;
+  &:hover {
+    background: rebeccapurple;
+    color: white;
+  }
+
+  ${props =>
+    props.primary &&
+    css`
+      background: rebeccapurple;
+      color: white;
+    `};
+`;
+
+const ShowResult = styled.div`
+  padding: 5px 10px;
+  margin-bottom: 40px;
+  border-radius: 4px;
+  background-color: #f3f3f3;
+  box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+`;
+
 const ShowSearchList = props => {
   return (
-    <div
-      style={{
-        margin: 'auto 10px',
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'space-around'
-      }}
-    >
+    <div>
+      <img
+        src={props.imageSmall}
+        alt={props.imageSmall}
+      />
       {props.shows.setlist.map(show => (
-        // <Show key={show.id} showDetails={show} image={props.image} />
-        <div
-          key={show.id}
-          style={{
-            flexBasis: '30%',
-            padding: '5px 10px',
-            marginBottom: '20px',
-            borderRadius: '4px',
-            backgroundColor: '#e5e5e5',
-            boxShadow:
-              '0 15px 35px rgba(50, 50, 93, .1), 0 5px 15px rgba(0, 0, 0, .07)'
-          }}
-        >
-          <p>Artist: {show.artist.name}</p>
-          <p>Date: {show.eventDate}</p>
-          <p>Venue: {show.venue.name}</p>
-          <p>City: {show.venue.city.name}</p>
-          <button
+        <ShowResult key={show.id}>
+          <h3>{show.artist.name}</h3>
+          <p>{show.eventDate}<br/>{show.venue.name}<br/>{show.venue.city.name}</p>
+          <Button
             onClick={() => {
               addShow(show, props.image);
             }}
           >
             Add show
-          </button>
+          </Button>
           <Link
             to={{
               pathname: `show/${show.id}`,
@@ -62,7 +77,7 @@ const ShowSearchList = props => {
           >
             See details
           </Link>
-        </div>
+        </ShowResult>
       ))}
     </div>
   );

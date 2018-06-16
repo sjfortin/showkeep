@@ -11,7 +11,8 @@ class SearchShows extends Component {
       response: [],
       searchTerm: '',
       noResults: '',
-      artistImage: ''
+      artistImage: '',
+      artistImageSmall: ''
     };
     this.setSearchTerm = this.setSearchTerm.bind(this);
     this.submitSearch = this.submitSearch.bind(this);
@@ -69,6 +70,8 @@ class SearchShows extends Component {
         if (res.data.results.artistmatches.artist) {
           this.setState({
             artistImage:
+              res.data.results.artistmatches.artist[0].image[4]['#text'],
+            artistImageSmall:
               res.data.results.artistmatches.artist[0].image[2]['#text']
           });
         } else {
@@ -100,7 +103,19 @@ class SearchShows extends Component {
         ) : (
           <div>
             <div style={{ textAlign: 'center', padding: '20px' }}>
-              <h1>Search Results:</h1>
+              <h3>Past {this.state.searchTerm} shows:</h3>
+              <h6>
+                Check for upcoming{' '}
+                <a
+                  href={`https://www.last.fm/music/${
+                    this.state.searchTerm
+                  }/+events`}
+                  alt="{this.state.searchTerm}"
+                >
+                  {this.state.searchTerm}
+                </a>{' '}
+                shows. Note: feature coming soon in showkeep.
+              </h6>
               <h3>
                 {this.state.response.page} out of {this.state.response.total}{' '}
                 pages
@@ -108,6 +123,7 @@ class SearchShows extends Component {
               <ShowSearchList
                 shows={this.state.response}
                 image={this.state.artistImage}
+                imageSmall={this.state.artistImageSmall}
               />
             </div>
           </div>
