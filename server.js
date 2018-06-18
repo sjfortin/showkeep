@@ -22,6 +22,13 @@ app.get('/shows', function(req, res) {
   if (req.query.artist) {
     baseUrl += 'artistName=' + req.query.artist;
   }
+  // if (req.query.city) {
+  //   baseUrl += '&cityName=' + req.query.city;
+  // }
+  // if (req.query.venue) {
+  //   baseUrl += '&venueName=' + req.query.venue;
+  // }
+  baseUrl += '&p=' + req.query.currentPageNumber;
 
   request(
     {

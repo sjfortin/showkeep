@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ShowSearchList from '../Components/ShowSearchList';
 import axios from 'axios';
+import ReactPaginate from 'react-paginate';
 
 class SearchShows extends Component {
   constructor(props) {
@@ -12,7 +13,9 @@ class SearchShows extends Component {
       searchTerm: '',
       noResults: '',
       artistImage: '',
-      artistImageSmall: ''
+      artistImageSmall: '',
+      pageCount: '',
+      currentPageNumber: 1
     };
     this.setSearchTerm = this.setSearchTerm.bind(this);
     this.submitSearch = this.submitSearch.bind(this);
@@ -47,7 +50,11 @@ class SearchShows extends Component {
 
   getShows = () => {
     return axios
-      .get(`/shows?artist=${this.state.searchTerm}`)
+      .get(
+        `/shows?artist=${this.state.searchTerm}&currentPageNumber=${
+          this.state.currentPageNumber
+        }`
+      )
       .then(
         res => {
           if (res.status === 204) {
@@ -57,7 +64,8 @@ class SearchShows extends Component {
             this.setState({
               isLoaded: true,
               response: res.data,
-              noResults: false
+              noResults: false,
+              pageCount: Math.ceil(res.data.total / 20)
             });
           }
         },
@@ -93,6 +101,14 @@ class SearchShows extends Component {
       });
   };
 
+  handlePageClick = data => {
+    console.log(data.selected + 1);
+    this.setState({
+      currentPageNumber: data.selected + 1
+    }, () => {
+      this.getShows();
+  });
+
   render() {
     return (
       <div>
@@ -127,13 +143,26 @@ class SearchShows extends Component {
                 shows. Note: feature coming soon in showkeep.
               </h6>
               <h3>
-                {this.state.response.page} out of {this.state.response.total}{' '}
-                pages
+                {this.state.response.page} out of{' '}
+                {Math.ceil(this.state.response.total / 20)} pages
               </h3>
               <ShowSearchList
                 shows={this.state.response}
                 image={this.state.artistImage}
                 imageSmall={this.state.artistImageSmall}
+              />
+              <ReactPaginate
+                previousLabel={'previous'}
+                nextLabel={'next'}
+                breakLabel={<a href="">...</a>}
+                breakClassName={'break-me'}
+                pageCount={this.state.pageCount}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
+                onPageChange={this.handlePageClick}
+                containerClassName={'pagination'}
+                subContainerClassName={'pages pagination'}
+                activeClassName={'active'}
               />
             </div>
           </div>
