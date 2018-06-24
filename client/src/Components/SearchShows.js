@@ -11,7 +11,7 @@ class SearchShows extends Component {
       isLoaded: false,
       response: [],
       searchTerm: '',
-      noResults: '',
+      noResults: true,
       artistImage: '',
       artistImageSmall: '',
       pageCount: '',
@@ -95,19 +95,22 @@ class SearchShows extends Component {
         } else {
           this.setState({
             artistImage:
-              'http://blog.iso50.com/wp-content/uploads/2016/10/1106-450x450.jpg'
+              'http://blog.iso50.com/wp-content//2016/10/1106-450x450.jpg'
           });
         }
       });
   };
 
   handlePageClick = data => {
-    console.log(data.selected + 1);
-    this.setState({
-      currentPageNumber: data.selected + 1
-    }, () => {
-      this.getShows();
-  });
+    this.setState(
+      {
+        currentPageNumber: data.selected + 1
+      },
+      () => {
+        this.getShows();
+      }
+    );
+  };
 
   render() {
     return (
@@ -154,7 +157,7 @@ class SearchShows extends Component {
               <ReactPaginate
                 previousLabel={'previous'}
                 nextLabel={'next'}
-                breakLabel={<a href="">...</a>}
+                breakLabel={<span>...</span>}
                 breakClassName={'break-me'}
                 pageCount={this.state.pageCount}
                 marginPagesDisplayed={2}

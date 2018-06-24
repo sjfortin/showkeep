@@ -24,11 +24,11 @@ const Button = styled.a`
   margin: 0.5rem 1rem;
   width: 11rem;
   background: transparent;
-  color: rebeccapurple;
-  border: 2px solid rebeccapurple;
+  color: darkslateblue;
+  border: 2px solid darkslateblue;
   cursor: pointer;
   &:hover {
-    background: rebeccapurple;
+    background: darkslateblue;
     color: white;
   }
 
