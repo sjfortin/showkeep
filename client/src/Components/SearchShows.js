@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import ShowSearchList from '../Components/ShowSearchList';
 import axios from 'axios';
 import ReactPaginate from 'react-paginate';
+import { connect } from 'react-redux';
+import { setSearchTerm } from '../actionCreators';
 
 class SearchShows extends Component {
   constructor(props) {
@@ -17,7 +19,7 @@ class SearchShows extends Component {
       pageCount: '',
       currentPageNumber: 1
     };
-    this.setSearchTerm = this.setSearchTerm.bind(this);
+    this.handleSearchTermChange = this.handleSearchTermChange.bind(this);
     this.submitSearch = this.submitSearch.bind(this);
     this.getShows = this.getShows.bind(this);
   }
@@ -32,7 +34,7 @@ class SearchShows extends Component {
     }
   }
 
-  setSearchTerm(event) {
+  handleSearchTermChange(event) {
     this.setState({ searchTerm: event.target.value });
   }
 
@@ -120,7 +122,7 @@ class SearchShows extends Component {
             Search for a show:
             <input
               value={this.state.searchTerm}
-              onChange={this.setSearchTerm}
+              onChange={this.handleSearchTermChange}
             />
           </label>
           <input type="submit" value="Submit" />
@@ -175,4 +177,16 @@ class SearchShows extends Component {
   }
 }
 
-export default SearchShows;
+const mapStateToProps = state => ({
+  searchTerm: state.searchTerm
+});
+const mapDispatchToProps = dispatch => ({
+  handleSearchTermChange(event) {
+    dispatch(setSearchTerm(event.target.value));
+  }
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SearchShows);
