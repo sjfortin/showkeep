@@ -7,6 +7,10 @@ import Home from './Components/Home';
 import SearchShows from './Components/SearchShows';
 import Show from './Components/Show';
 
+import { setSearchTerm } from './actionCreators';
+window.store = store;
+window.setSearchTerm = setSearchTerm;
+
 class App extends Component {
   render() {
     return (

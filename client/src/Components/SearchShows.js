@@ -3,17 +3,16 @@ import ShowSearchList from '../Components/ShowSearchList';
 import axios from 'axios';
 import ReactPaginate from 'react-paginate';
 import { connect } from 'react-redux';
-import { setSearchTerm } from '../actionCreators';
+import { setSearchTerm, setCurrentShowList } from '../actionCreators';
 
 class SearchShows extends Component {
   constructor(props) {
     super(props);
     this.state = {
       error: null,
-      isLoaded: false,
-      response: [],
+      noResults: false,
       searchTerm: '',
-      noResults: true,
+      response: [],
       artistImage: '',
       artistImageSmall: '',
       pageCount: '',
@@ -24,16 +23,6 @@ class SearchShows extends Component {
     this.getShows = this.getShows.bind(this);
   }
 
-  componentDidMount() {
-    if (this.props.location.query) {
-      this.setState({
-        response: this.props.location.query.shows,
-        isLoaded: true,
-        noResults: false
-      });
-    }
-  }
-
   handleSearchTermChange(event) {
     this.setState({ searchTerm: event.target.value });
   }
@@ -42,11 +31,11 @@ class SearchShows extends Component {
     event.preventDefault();
     if (this.state.searchTerm === '') {
       this.setState({
-        response: [],
-        isLoaded: false
+        noResults: true
       });
     } else {
       this.getShows();
+      this.props.setSearchTerm(this.state.searchTerm);
     }
   }
 
@@ -60,23 +49,24 @@ class SearchShows extends Component {
       .then(
         res => {
           if (res.status === 204) {
-            this.setState({ isLoaded: true, response: [], noResults: true });
+            this.setState({ noResults: true });
           } else {
             console.log(res.data);
             this.setState({
-              isLoaded: true,
               response: res.data,
-              noResults: false,
               pageCount: Math.ceil(res.data.total / 20)
             });
+            this.props.setCurrentShowList(res.data);
           }
         },
         error => {
-          this.setState({ isLoaded: true, error });
+          console.log('eeererer');
+
+          this.setState({ error });
         }
       )
       .then(() => {
-        if (!this.state.noResults) {
+        if (Object.keys(this.props.shows).length !== 0) {
           this.getImage();
         }
       })
@@ -85,7 +75,7 @@ class SearchShows extends Component {
 
   getImage = () => {
     return axios
-      .get(`/image?artist=${this.state.response.setlist[0].artist.name}`)
+      .get(`/image?artist=${this.props.shows.setlist[0].artist.name}`)
       .then(res => {
         if (res.data.results.artistmatches.artist) {
           this.setState({
@@ -127,32 +117,31 @@ class SearchShows extends Component {
           </label>
           <input type="submit" value="Submit" />
         </form>
-        {!this.state.isLoaded ? (
+        {Object.keys(this.props.shows).length === 0 ? (
           <div>Use that search box to do some searching</div>
         ) : this.state.noResults ? (
           <div>No results</div>
         ) : (
           <div>
             <div style={{ textAlign: 'center', padding: '20px' }}>
-              <h3>Past {this.state.searchTerm} shows:</h3>
+              <h3>Past {this.props.searchTerm} shows:</h3>
               <h6>
                 Check for upcoming{' '}
                 <a
                   href={`https://www.last.fm/music/${
-                    this.state.searchTerm
+                    this.props.searchTerm
                   }/+events`}
-                  alt="{this.state.searchTerm}"
+                  alt="{this.props.searchTerm}"
                 >
-                  {this.state.searchTerm}
+                  {this.props.searchTerm}
                 </a>{' '}
                 shows. Note: feature coming soon in showkeep.
               </h6>
               <h3>
-                {this.state.response.page} out of{' '}
-                {Math.ceil(this.state.response.total / 20)} pages
+                {this.props.shows.page} out of{' '}
+                {Math.ceil(this.props.shows.total / 20)} pages
               </h3>
               <ShowSearchList
-                shows={this.state.response}
                 image={this.state.artistImage}
                 imageSmall={this.state.artistImageSmall}
               />
@@ -161,7 +150,7 @@ class SearchShows extends Component {
                 nextLabel={'next'}
                 breakLabel={<span>...</span>}
                 breakClassName={'break-me'}
-                pageCount={this.state.pageCount}
+                pageCount={this.props.pageCount}
                 marginPagesDisplayed={2}
                 pageRangeDisplayed={5}
                 onPageChange={this.handlePageClick}
@@ -178,13 +167,16 @@ class SearchShows extends Component {
 }
 
 const mapStateToProps = state => ({
-  searchTerm: state.searchTerm
+  searchTerm: state.searchTerm,
+  shows: state.currentShows
 });
-const mapDispatchToProps = dispatch => ({
-  handleSearchTermChange(event) {
-    dispatch(setSearchTerm(event.target.value));
-  }
-});
+
+const mapDispatchToProps = dispatch => {
+  return {
+    setSearchTerm: term => dispatch(setSearchTerm(term)),
+    setCurrentShowList: shows => dispatch(setCurrentShowList(shows))
+  };
+};
 
 export default connect(
   mapStateToProps,

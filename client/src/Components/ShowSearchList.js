@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import axios from 'axios';
+import { connect } from 'react-redux';
 
 function addShow(show, image) {
   axios
@@ -87,4 +88,9 @@ const ShowSearchList = props => {
   );
 };
 
-export default ShowSearchList;
+const mapStateToProps = state => ({
+  searchTerm: state.searchTerm,
+  shows: state.currentShows
+});
+
+export default connect(mapStateToProps)(ShowSearchList);

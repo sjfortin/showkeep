@@ -1,24 +1,34 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-class Show extends Component {
-  render() {
-    return (
+const Show = props => {
+  return (
+    <div>
+      <Link
+        to={{
+          pathname: '/search'
+        }}
+      >
+        Go Back
+      </Link>
       <div>
-        <Link to={{ pathname: '/search', query: { shows: this.props.location.state.shows } }}>Go Back</Link>
-        <div>
-          <img
-            src={this.props.location.state.image}
-            alt={this.props.location.state.image}
-          />
-        </div>
-        <p>Artist: {this.props.location.state.show.artist.name}</p>
-        <p>Date: {this.props.location.state.show.eventDate}</p>
-        <p>Venue: {this.props.location.state.show.venue.name}</p>
-        <p>City: {this.props.location.state.show.venue.city.name}</p>
+        <img
+          src={props.location.state.image}
+          alt={props.location.state.image}
+        />
       </div>
-    );
-  }
-}
+      <p>Artist: {props.location.state.show.artist.name}</p>
+      <p>Date: {props.location.state.show.eventDate}</p>
+      <p>Venue: {props.location.state.show.venue.name}</p>
+      <p>City: {props.location.state.show.venue.city.name}</p>
+    </div>
+  );
+};
 
-export default Show;
+const mapStateToProps = state => ({
+  searchTerm: state.searchTerm,
+  shows: state.currentShows
+});
+
+export default connect(mapStateToProps)(Show);
